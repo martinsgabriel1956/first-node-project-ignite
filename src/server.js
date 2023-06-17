@@ -24,10 +24,10 @@ const listUser = (request, response) => {
 
     users.push(userBody);
 
-    return response.end("Created user");
+    return response.writeHead(201).end();
   }
 
-  return response.end("Hello World!");
+  return response.writeHead(404).end();
 };
 
 const server = http.createServer(listUser);
