@@ -1,5 +1,7 @@
 import http from "node:http";
 
+const users = [];
+
 const listUser = (request, response) => {
   const { method, url } = request;
 
@@ -8,11 +10,21 @@ const listUser = (request, response) => {
   const isCreateMethod = method === "POST" && isUserURL;
 
   if (isListMethod) {
-    return response.end("User list");
+    return response
+      .setHeader("content-type", "application/json")
+      .end(JSON.stringify(users));
   }
 
   if (isCreateMethod) {
-    return response.end("Create user");
+    const userBody = {
+      id: 1,
+      name: "John Doe",
+      email: "johndoes@email.com",
+    };
+
+    users.push(userBody);
+
+    return response.end("Created user");
   }
 
   return response.end("Hello World!");
