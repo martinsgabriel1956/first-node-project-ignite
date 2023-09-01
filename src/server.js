@@ -1,7 +1,8 @@
 import http from "node:http";
 import { JSONMiddleware } from "./middlewares/json.js";
+import { Database } from "./database.js";
 
-const users = [];
+const database = new Database();
 
 const listUser = async (request, response) => {
   const { method, url } = request;
@@ -13,19 +14,20 @@ const listUser = async (request, response) => {
   const isCreateMethod = method === "POST" && isUserURL;
 
   if (isListMethod) {
+    const users = database.select("users");
     return response.end(JSON.stringify(users));
   }
 
   if (isCreateMethod) {
     const { name, email } = request.body;
 
-    const userBody = {
+    const user = {
       id: 1,
       name,
       email,
     };
 
-    users.push(userBody);
+    database.insert("users", user);
 
     return response.writeHead(201).end();
   }
