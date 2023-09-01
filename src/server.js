@@ -1,36 +1,19 @@
 import http from "node:http";
-import { randomUUID } from "node:crypto";
-import { JSONMiddleware } from "./middlewares/json.js";
-import { Database } from "./database.js";
 
-const database = new Database();
+import { JSONMiddleware } from "./middlewares/json.js";
+import { routes } from "./routes.js";
 
 const listUser = async (request, response) => {
   const { method, url } = request;
 
   await JSONMiddleware(request, response);
 
-  const isUserURL = url === "/users";
-  const isListMethod = method === "GET" && isUserURL;
-  const isCreateMethod = method === "POST" && isUserURL;
+  const route = routes.find(
+    (route) => route.method === method && route.path === url
+  );
 
-  if (isListMethod) {
-    const users = database.select("users");
-    return response.end(JSON.stringify(users));
-  }
-
-  if (isCreateMethod) {
-    const { name, email } = request.body;
-
-    const user = {
-      id: randomUUID(),
-      name,
-      email,
-    };
-
-    database.insert("users", user);
-
-    return response.writeHead(201).end();
+  if (route) {
+    return route.handler(request, response);
   }
 
   return response.writeHead(404).end();
