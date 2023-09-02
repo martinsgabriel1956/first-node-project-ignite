@@ -30,7 +30,9 @@ export class Database {
   }
 
   insert(table, data) {
-    if (Array.isArray(this.#database[table])) {
+    const tableExists = Array.isArray(this.#database[table]);
+    
+    if (tableExists) {
       this.#database[table].push(data);
     } else {
       this.#database[table] = [data];
@@ -39,5 +41,15 @@ export class Database {
     this.#persist();
 
     return data;
+  }
+
+  delete(table, id) {
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id);
+    const registerExists = rowIndex > -1;
+
+    if(registerExists) {
+      this.#database[table].splice(rowIndex, 1);
+      this.#persist();
+    }
   }
 }
