@@ -24,8 +24,19 @@ export class Database {
       console.log(error)
     );
   }
-  select(table) {
-    const data = this.#database[table] ?? [];
+  select(table, search) {
+    let data = this.#database[table] ?? [];
+
+    if(search) {
+      const filterByName = (row) => {
+        const transformQueryParamsObjToKeyValueArray = ([key, value]) => row[key].toLowerCase().includes(value.toLowerCase());
+
+        return Object.entries(search).some(transformQueryParamsObjToKeyValueArray);
+      };
+
+      data = data.filter(filterByName);
+    }
+
     return data;
   }
 
