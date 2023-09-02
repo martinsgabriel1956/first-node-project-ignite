@@ -9,10 +9,12 @@ const listUser = async (request, response) => {
   await JSONMiddleware(request, response);
 
   const route = routes.find(
-    (route) => route.method === method && route.path === url
+    (route) => route.method === method && route.path.test(url)
   );
 
   if (route) {
+    const routeParams = request.url.match(route.path);
+    console.log(routeParams)
     return route.handler(request, response);
   }
 
