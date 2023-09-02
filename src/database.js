@@ -43,6 +43,16 @@ export class Database {
     return data;
   }
 
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id);
+    const registerExists = rowIndex > -1;
+
+    if(registerExists) {
+      this.#database[table][rowIndex] = {id, ...data};
+      this.#persist();
+    }
+  }
+  
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex((row) => row.id === id);
     const registerExists = rowIndex > -1;
