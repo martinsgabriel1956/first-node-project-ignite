@@ -52,7 +52,7 @@ export class Database {
       this.#persist();
     }
   }
-  
+
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex((row) => row.id === id);
     const registerExists = rowIndex > -1;
